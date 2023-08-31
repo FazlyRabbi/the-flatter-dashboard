@@ -100,14 +100,6 @@ function DashboardIndex() {
           ))}
         </div>
       </div>
-
-      <div>
-        <input
-          type="file"
-          onChange={(e) => setselectedFile(e.target.files[0])}
-        />
-        <button onClick={() => handleUpload()}>upload</button>
-      </div>
     </div>
   );
 }
