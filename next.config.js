@@ -21,6 +21,11 @@ const nextConfig = {
       },
     ];
   },
+  images: {
+    unoptimized: true,
+
+    domains: ["localhost"],
+  },
   env: {
     GET_ALL_REPO: process.env.GET_ALL_REPO,
     SECRET_TOKEN: process.env.SECRET_TOKEN,
