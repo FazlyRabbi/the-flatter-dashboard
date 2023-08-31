@@ -1,0 +1,34 @@
+https://docs.google.com/document/d/1U8BsHurB4TCDgjPysPnUVElzQQl4D7u6_zJ8v2i0Yn0/edit
+
+
+
+Pages ======
+
+Home
+Category
+Search 
+Product 
+
+
+
+get all repos form the github
+=============================
+https://api.github.com/search/repositories?q=user:FazlyRabbi&per_page=100
+
+
+get all spacifiq branch form the github
+=============================
+https://api.github.com/repos/FazlyRabbi/TheFlutterWayMarket/branches/dev
+
+
+get README.md file form the github
+=============================
+https://api.github.com/repos/FazlyRabbi/TheFlutterWayMarket/contents/README.md
+
+
+https://api.github.com/search/issues?q=stress+test+label:bug+language:python+state:closed&per_page=100
+
+
+
+
+npx prisma migrate dev --name init
