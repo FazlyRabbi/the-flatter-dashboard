@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  cors: {
+    allowedHeaders: ["*"],
+    allowedOrigins: ["http://localhost:3000"],
+    allowedMethods: ["GET", "POST"],
+  },
   async headers() {
     return [
       {
@@ -22,7 +27,6 @@ const nextConfig = {
     ];
   },
 
-  
   images: {
     unoptimized: true,
 
