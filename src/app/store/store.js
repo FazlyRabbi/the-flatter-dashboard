@@ -1,7 +1,11 @@
 import { create } from "zustand";
 import { fetchReadme } from "@varandas/fetch-readme";
+import 'text-encoding';
+
+import axios from "axios";
 
 const useStore = create((set) => ({
+  repos: null,
   data: null,
   loading: false,
   error: null,
@@ -16,6 +20,18 @@ const useStore = create((set) => ({
     category: null,
     tags: "",
     isPublised: "true",
+  },
+
+  fetchRepo: async () => {
+    set({ loading: true, error: null });
+
+    try {
+      const response = await axios.get(`${process.env.NEXT_URL}/repo`);
+
+      set({ repos: response.data, loading: false });
+    } catch (error) {
+      set({ error, loading: false });
+    }
   },
 
   fetchCategory: async () => {

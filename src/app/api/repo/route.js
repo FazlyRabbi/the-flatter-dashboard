@@ -1,11 +1,8 @@
 import { createEdgeRouter } from "next-connect";
-import { getRepo, postRepo } from "@/app/controllers/repo";
+import { getRepo, postRepo, privetRepo } from "@/app/controllers/repo";
 const router = createEdgeRouter();
 
-router
-  // .use(imgMiddleware)
-  .get(getRepo)
-  .post(postRepo);
+router.get(getRepo).post(postRepo).put(privetRepo);
 
 export async function GET(request, ctx) {
   return router.run(request, ctx);

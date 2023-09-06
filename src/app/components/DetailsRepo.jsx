@@ -3,43 +3,45 @@ import React, { useEffect, useState } from "react";
 import useStore from "../store/store";
 import LeftMenu from "./Dashboard/LeftMenu";
 import { HiMenuAlt1 } from "react-icons/hi";
-import MarkdownIt from "markdown-it";
-import MdEditor from "react-markdown-editor-lite";
-import "react-markdown-editor-lite/lib/index.css";
-import TagsInput from "react-tagsinput";
+import { TagsInput } from "react-tag-input-component";
+import Swal from "sweetalert2";
 import axios from "axios";
-
-const mdParser = new MarkdownIt();
-
-// Custom render function to handle image URLs
-mdParser.renderer.rules.image = (tokens, idx, options, env, self) => {
-  const token = tokens[idx];
-  // Get the image URL from the token
-  const imgSrc = token.attrGet("src");
-  // Assuming images are in the /public/images folder
-  return `<img src="http://localhost:3000/images/${imgSrc}" alt="${token.content}" />`;
-};
-
+import dynamic from "next/dynamic";
 import { Card, CardBody, Input, Button } from "@material-tailwind/react";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+
+const MDEditor = dynamic(
+  () => import("@uiw/react-md-editor").then((mod) => mod.default),
+  { ssr: false }
+);
+const EditerMarkdown = dynamic(
+  () =>
+    import("@uiw/react-md-editor").then((mod) => {
+      return mod.default.Markdown;
+    }),
+  { ssr: false }
+);
+
+const Markdown = dynamic(
+  () => import("@uiw/react-markdown-preview").then((mod) => mod.default),
+  { ssr: false }
+);
 
 function DetailsRepo({ repoName }) {
-  const {
-    loading,
-    error,
-    repo,
-    fetchReadmd,
-    fetchBranches,
-    init,
-    fetchCategory,
-  } = useStore();
+  const { fetchReadmd, fetchBranches, init, fetchCategory } = useStore();
 
   const [selectedFile, setselectedFile] = useState(null);
 
   const [finalRepo, setFinalRepo] = useState(null);
 
+  const [isFatching, setIsFatching] = useState(false);
+
   const [sidebar, setSidebar] = useState(false);
 
   const [tags, setTags] = useState([]);
+
+  const [tagStr, setTagStr] = useState("");
 
   useEffect(() => {
     fetchReadmd(repoName);
@@ -65,6 +67,7 @@ function DetailsRepo({ repoName }) {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsFatching(true);
       if (!selectedFile) return;
       const formData = new FormData();
       formData.append("file", selectedFile);
@@ -72,14 +75,29 @@ function DetailsRepo({ repoName }) {
       formData.append("description", finalRepo?.description);
       formData.append("subBranch", finalRepo?.subBranch);
       formData.append("version", finalRepo?.version);
-      formData.append("tags", finalRepo?.tags);
-      formData.append("isPublished", finalRepo?.isPublished);
+      formData.append("tags", tagStr);
+      formData.append("isPublished", finalRepo?.isPublished || true);
       formData.append("liveLink", finalRepo?.liveLink);
       formData.append("category", finalRepo?.category);
 
-      const { data } = await axios.post("/api/repo", formData);
+      const response = await axios.post("/api/repo", formData);
 
-      console.log(data);
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Repo Succeffylly Added!",
+        });
+        setIsFatching(false);
+
+        return;
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Internal server error!",
+        });
+        setIsFatching(false);
+        return;
+      }
     } catch (err) {
       console.log(err);
     }
@@ -87,8 +105,9 @@ function DetailsRepo({ repoName }) {
 
   const handleTagsChange = (tags) => {
     setTags(tags);
+
     const commaSeparatedString = tags.join(",");
-    setFinalRepo({ ...finalRepo, tags: commaSeparatedString });
+    setTagStr(commaSeparatedString);
   };
 
   if (!finalRepo) {
@@ -105,7 +124,7 @@ function DetailsRepo({ repoName }) {
           closeSidebar={closeSidebar}
         />
         {/* total page */}
-        <div className=" w-full grid   h-full  overflow-y-scroll grid-cols-1  2xl:grid-cols-3 gap-y-2  lg:col-span-4 ">
+        <div className=" xl:ml-[21rem]  w-full grid   h-full  overflow-y-scroll grid-cols-1  2xl:grid-cols-3 gap-y-2  lg:col-span-4 ">
           <div className="   2xl:col-span-3  2xl:order-2 ">
             {/* header */}
             <div className="  bg-white flex items-center  px-10 justify-between  h-[5rem] cutstomShad  w-full  mb-8">
@@ -124,7 +143,7 @@ function DetailsRepo({ repoName }) {
             {/* ==========Main======== */}
 
             <form onSubmit={onSubmit}>
-              <div className="   w-full grid grid-cols-1 justify-items-center">
+              <div className="  mb-10 w-full  grid grid-cols-1 justify-items-center">
                 <Card className="mt-6  max-w-[120rem] w-[90%]">
                   <CardBody className=" space-y-8">
                     <div className="w-full flex flex-col space-y-3">
@@ -137,6 +156,7 @@ function DetailsRepo({ repoName }) {
 
                       <input
                         required
+                        disabled={isFatching}
                         type="file"
                         onChange={(e) => setselectedFile(e.target.files[0])}
                       />
@@ -145,6 +165,7 @@ function DetailsRepo({ repoName }) {
                       <Input
                         label="Title"
                         required
+                        disabled={isFatching}
                         value={finalRepo.title}
                         onChange={(e) =>
                           setFinalRepo({ ...finalRepo, title: e.target.value })
@@ -153,22 +174,36 @@ function DetailsRepo({ repoName }) {
                     </div>
 
                     <div className="w-full">
-                      {
-                        <MdEditor
-                          value={finalRepo?.description}
-                          style={{ height: "500px" }}
-                          renderHTML={(text) => mdParser.render(text)}
-                          onChange={({ text }) =>
-                            setFinalRepo({ ...finalRepo, description: text })
-                          }
-                        />
-                      }
+                      <label
+                        htmlFor="thumbnail"
+                        className=" mb-2 block text-black font-semibold"
+                      >
+                        Description
+                      </label>
+
+                      <MDEditor
+                        value={finalRepo?.description}
+                        onChange={(value) =>
+                          setFinalRepo({
+                            ...finalRepo,
+                            description: value,
+                          })
+                        }
+                      />
                     </div>
 
                     <div className="w-full">
+                      <label
+                        htmlFor="thumbnail"
+                        className=" mb-2 block text-black font-semibold"
+                      >
+                        Branches
+                      </label>
+
                       {init?.subBranch && (
                         <select
                           required
+                          disabled={isFatching}
                           className="relative px-2  w-full rounded-md  bg-white border-[#B0BEC5] border min-w-[200px] h-10"
                           onChange={(e) =>
                             setFinalRepo({
@@ -191,6 +226,7 @@ function DetailsRepo({ repoName }) {
                         type="number"
                         label="Version"
                         required
+                        disabled={isFatching}
                         value={finalRepo.version}
                         onChange={(e) =>
                           setFinalRepo({
@@ -202,6 +238,12 @@ function DetailsRepo({ repoName }) {
                     </div>
 
                     <div className="w-full">
+                      <label
+                        htmlFor="thumbnail"
+                        className=" mb-2 block text-black font-semibold"
+                      >
+                        Live Link
+                      </label>
                       <Input
                         type="text"
                         label="Live Link"
@@ -216,9 +258,16 @@ function DetailsRepo({ repoName }) {
                     </div>
 
                     <div className="w-full">
+                      <label
+                        htmlFor="thumbnail"
+                        className=" mb-2 block text-black font-semibold"
+                      >
+                        Category
+                      </label>
                       {init?.category && (
                         <select
                           required
+                          disabled={isFatching}
                           className="relative px-2 w-full rounded-md  bg-white border-[#B0BEC5] border min-w-[200px] h-10"
                           onChange={(e) =>
                             setFinalRepo({
@@ -239,6 +288,12 @@ function DetailsRepo({ repoName }) {
                     </div>
 
                     <div className="w-full">
+                      <label
+                        htmlFor="thumbnail"
+                        className=" mb-2 block text-black font-semibold"
+                      >
+                        Tags
+                      </label>
                       <TagsInput
                         className=" border border-gray-200 w-full p-2 rounded-md"
                         value={tags}
@@ -247,6 +302,13 @@ function DetailsRepo({ repoName }) {
                     </div>
 
                     <div className="w-full">
+                      <label
+                        htmlFor="thumbnail"
+                        className=" mb-2 block text-black font-semibold"
+                      >
+                        Published
+                      </label>
+
                       <select
                         className="relative w-full rounded-md  bg-white border-[#B0BEC5] px-2 border min-w-[200px] h-10"
                         variant="outlined"
@@ -264,8 +326,16 @@ function DetailsRepo({ repoName }) {
                       </select>
                     </div>
 
-                    <Button className="w-full" type="submit">
-                      Submit
+                    <Button
+                      disabled={isFatching}
+                      className="w-full"
+                      type="submit"
+                    >
+                      {isFatching ? (
+                        <span className=" animate-pulse">Loading...</span>
+                      ) : (
+                        "Submit"
+                      )}
                     </Button>
                   </CardBody>
                 </Card>

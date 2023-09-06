@@ -1,16 +1,18 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 // import leftmenu
 import LeftMenu from "./Dashboard/LeftMenu";
 // import useSweetAlert from "@/components/lib/sweetalert2";
 import { HiMenuAlt1 } from "react-icons/hi";
 // import tailwind modal
 import { Card, CardBody, Typography, Button } from "@material-tailwind/react";
-import Link from "next/link";
 import ContentLoader from "react-content-loader";
 import { FolderIcon } from "@heroicons/react/24/outline";
 import useStore from "../store/store";
+import "text-encoding";
+import Swal from "sweetalert2";
 
+import axios from "axios";
 // init loader
 const loader = (
   <>
@@ -265,23 +267,52 @@ const loader = (
   </>
 );
 
-export default function GetRepo() {
+export default function Publised() {
   const [sidebar, setSidebar] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
-  const { data, loading, error, fetchData } = useStore();
+  const { loading, error, fetchRepo, repos } = useStore();
+  const [isFatching, setIsFatching] = useState(false);
 
   useEffect(() => {
-    fetchData(); // Trigger the fetchData function when the component mounts.
-  }, [fetchData]);
+    fetchRepo(); // Trigger the fetchData function when the component mounts.
+  }, [fetchRepo]);
 
-  const filteredData = data?.items.filter((repo) =>
-    repo.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const publisedRepos = repos?.data.filter((repo) => repo.isPublished === true);
+
+  const filteredData = useMemo(() => {
+    return publisedRepos?.filter((repo) =>
+      repo.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [publisedRepos, searchQuery]);
 
   const closeSidebar = () => {
     setSidebar(false);
   };
+
+  const handlePrvetRepo = useCallback(async (id) => {
+    try {
+      setIsFatching(true);
+      const response = await axios.put(`${process.env.NEXT_URL}/repo`, id);
+
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Repo Successfully Unpublished!",
+        });
+        setIsFatching(false);
+        return;
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Internal server error!",
+        });
+        setIsFatching(false);
+        return;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -302,7 +333,9 @@ export default function GetRepo() {
           <div className="     2xl:col-span-3  2xl:order-2 ">
             {/* header */}
             <div className="   bg-white flex items-center  px-10 justify-between  h-[5rem] cutstomShad  w-full  mb-8">
-              <h1 className=" uppercase  text-[#223354] font-bold">All REPO</h1>
+              <h1 className=" uppercase  text-[#223354] font-bold">
+                All Publised REPO
+              </h1>
 
               {/* // search bar */}
               <div className="font-sans text-black  shadow-md flex items-center justify-center">
@@ -344,31 +377,32 @@ export default function GetRepo() {
                     <Card className="mt-6 w-full" key={index}>
                       <CardBody>
                         {/* single repo */}
-
                         <div
                           key={index}
                           className=" flex gap-y-2 flex-col items-center justify-center"
                         >
                           <FolderIcon className="h-10 w-10 " />
-
                           <Typography
                             variant="h5"
                             color="blue-gray"
                             className="mb-2 text-center"
                           >
-                            {repo.name}
+                            {repo?.title}
                           </Typography>
 
-                          <Typography className=" text-center">
-                            Because it&apos;s about motivating the doers.
-                            Because I&apos;m here to follow my dreams and
-                            inspire others.
-                          </Typography>
-                          <Link href={`/repos/${repo.name}`} className="block ">
-                            <Button size="md" className=" mt-4">
-                              Publish
-                            </Button>
-                          </Link>
+                          <Button
+                            disabled={isFatching}
+                            onClick={() => handlePrvetRepo(repo.id)} // Use an arrow function here
+                            color="red"
+                            size="md"
+                            className=" mt-4"
+                          >
+                            {isFatching ? (
+                              <span className=" animate-pulse">Loading..</span>
+                            ) : (
+                              "  Make Privet"
+                            )}
+                          </Button>
                         </div>
                       </CardBody>
                     </Card>

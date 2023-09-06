@@ -23,10 +23,10 @@ export default function LeftMenu({ sidebar, closeSidebar }) {
   };
 
   return (
-    <div className="p-5 ">
+    <div className="xl:p-5 xl:fixed  ">
       <Card
         className={` ${
-          sidebar ? "left-[0rem] z-50" : "-left-[100rem]"
+          sidebar ? "left-[0rem] z-50  " : "-left-[100rem]"
         } xl:static xl:left-0  absolute      w-[18rem]  p-5 shadow-xl
          
          bg-[#2B383F]
@@ -72,13 +72,15 @@ export default function LeftMenu({ sidebar, closeSidebar }) {
             </Button>
           </Link>
 
-          <Link href={`/`}>
+          <Link href={`/publised`}>
             <Button
               variant="gradient"
               ripple={false}
               color="blue"
               className={`  ${
-                path === "/" ? "" : "bg-none shadow-none  hover:shadow-none"
+                path === "/publised"
+                  ? ""
+                  : "bg-none shadow-none  hover:shadow-none"
               } w-full       text-sm text-left flex items-center gap-3 `}
             >
               <ArrowUpOnSquareStackIcon className="h-5 w-5  text-white" />

@@ -1,10 +1,14 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+const removeImports = require("next-remove-imports")();
+
+const nextConfig = removeImports({
   cors: {
     allowedHeaders: ["*"],
     allowedOrigins: ["http://localhost:3000"],
     allowedMethods: ["GET", "POST"],
   },
+
   async headers() {
     return [
       {
@@ -41,6 +45,6 @@ const nextConfig = {
     CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
     NEXT_URL: process.env.NEXT_URL,
   },
-};
+});
 
 module.exports = nextConfig;

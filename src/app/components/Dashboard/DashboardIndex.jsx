@@ -1,6 +1,7 @@
 "use client";
 // imports components
 import React from "react";
+import 'text-encoding';
 import axios from "axios";
 import { Typography } from "@material-tailwind/react";
 import { HiMenuAlt1 } from "react-icons/hi";
@@ -43,13 +44,13 @@ function DashboardIndex() {
     <div className="   flex   bg-[#F2F5F9]">
       {/* <lest menu /> */}
       <LeftMenu
-        className=" max-w-[18rem] "
+        className=" max-w-[18rem]"
         sidebar={sidebar}
         closeSidebar={closeSidebar}
       />
 
       {/* total page */}
-      <div className="w-full">
+      <div className="  xl:ml-[21rem]  w-full  ">
         {/* header */}
         <div className="  bg-white flex items-center  px-10 justify-between  h-[5rem] cutstomShad  w-full  mb-8">
           <h1 className=" uppercase  text-[1.5rem]  text-[#223354] font-bold">

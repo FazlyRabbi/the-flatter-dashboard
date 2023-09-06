@@ -1,4 +1,8 @@
-import { CreateRepo, getAllRepo } from "../../../prisma/createRepo";
+import {
+  CreateRepo,
+  getAllRepo,
+  makePrivetRepo,
+} from "../../../prisma/createRepo";
 import { NextRequest, NextResponse } from "next/server";
 import { existsSync } from "fs";
 import fs from "fs/promises";
@@ -14,7 +18,6 @@ cloudinary.config({
 
 export async function getRepo() {
   try {
-    
     const result = await getAllRepo();
 
     const responseData = {
@@ -50,10 +53,11 @@ export async function getRepo() {
 
 export async function postRepo(req) {
   const formData = await req.formData();
+  console.log(formData);
 
   try {
     const f = formData.get("file");
-
+    console.log(f);
     if (!f) {
       return NextResponse.json({}, { status: 400 });
     }
@@ -92,6 +96,7 @@ export async function postRepo(req) {
       subBranch: formData.get("subBranch"),
       version: formData.get("version"),
       liveLink: formData.get("liveLink"),
+      price: formData.get("price"),
       category: {
         connect: {
           id: parseInt(id), // Connect using the category's ID
@@ -109,6 +114,45 @@ export async function postRepo(req) {
       ok: true,
       message: "Repo Inserted Successfully!",
       data: backRes,
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (err) {
+    const responseData = {
+      ok: false,
+      message: "Data Not Inserted!",
+      data: err.message,
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      status: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Content-Type": "application/json", // Set the content type header to JSON
+      },
+    });
+  }
+}
+
+export async function privetRepo(req) {
+  try {
+    const id = await req.json();
+    const result = await makePrivetRepo(id);
+    //  sending respons
+    const responseData = {
+      ok: true,
+      message: "Repo Privet Successfully!",
+      data: result,
     };
 
     return new Response(JSON.stringify(responseData), {
