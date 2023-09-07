@@ -53,7 +53,6 @@ export async function getRepo() {
 
 export async function postRepo(req) {
   const formData = await req.formData();
-  console.log(formData);
 
   try {
     const f = formData.get("file");
@@ -97,6 +96,7 @@ export async function postRepo(req) {
       version: formData.get("version"),
       liveLink: formData.get("liveLink"),
       price: formData.get("price"),
+      reponame: formData.get("reponame"),
       category: {
         connect: {
           id: parseInt(id), // Connect using the category's ID

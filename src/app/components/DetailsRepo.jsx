@@ -15,18 +15,6 @@ const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default),
   { ssr: false }
 );
-const EditerMarkdown = dynamic(
-  () =>
-    import("@uiw/react-md-editor").then((mod) => {
-      return mod.default.Markdown;
-    }),
-  { ssr: false }
-);
-
-const Markdown = dynamic(
-  () => import("@uiw/react-markdown-preview").then((mod) => mod.default),
-  { ssr: false }
-);
 
 function DetailsRepo({ repoName }) {
   const { fetchReadmd, fetchBranches, init, fetchCategory } = useStore();
@@ -60,6 +48,10 @@ function DetailsRepo({ repoName }) {
     }
   }, [init]);
 
+  useEffect(() => {
+    console.log(init);
+  }, [init]);
+
   const closeSidebar = () => {
     setSidebar(false);
   };
@@ -70,6 +62,7 @@ function DetailsRepo({ repoName }) {
       setIsFatching(true);
       if (!selectedFile) return;
       const formData = new FormData();
+
       formData.append("file", selectedFile);
       formData.append("title", finalRepo?.title);
       formData.append("description", finalRepo?.description);
@@ -79,6 +72,7 @@ function DetailsRepo({ repoName }) {
       formData.append("isPublished", finalRepo?.isPublished || true);
       formData.append("liveLink", finalRepo?.liveLink);
       formData.append("category", finalRepo?.category);
+      formData.append("reponame", repoName);
 
       const response = await axios.post("/api/repo", formData);
 

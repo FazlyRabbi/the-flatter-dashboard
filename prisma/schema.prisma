@@ -15,6 +15,7 @@ model Repos {
   subBranch    String   
   version      String
   price        Float?
+  reponame     String @default("main")
   liveLink     String
   category     Category @relation(fields: [categoryId], references: [id])
   tags         String

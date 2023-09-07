@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { fetchReadme } from "@varandas/fetch-readme";
-import 'text-encoding';
+import "text-encoding";
 
 import axios from "axios";
 
@@ -143,3 +143,4 @@ const useStore = create((set) => ({
 }));
 
 export default useStore;
+
