@@ -48,3 +48,5 @@ const nextConfig = removeImports({
 });
 
 module.exports = nextConfig;
+
+process.noDeprecation = true;

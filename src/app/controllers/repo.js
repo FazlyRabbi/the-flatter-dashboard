@@ -16,9 +16,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function getRepo() {
+export async function getRepo(req) {
   try {
-    const result = await getAllRepo();
+    const url = new URL(req.url);
+    const page = url.searchParams.get("page");
+
+    const result = await getAllRepo(page);
 
     const responseData = {
       ok: true,
@@ -56,14 +59,14 @@ export async function postRepo(req) {
 
   try {
     const f = formData.get("file");
-    console.log(f);
+ 
     if (!f) {
       return NextResponse.json({}, { status: 400 });
     }
 
     const file = f;
 
-    const destinationDirPath = path.join(process.cwd(), "tmp");
+    const destinationDirPath = path.join(process.cwd(), "/tmp");
 
     const fileArrayBuffer = await file.arrayBuffer();
 

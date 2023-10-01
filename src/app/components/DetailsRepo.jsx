@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import useStore from "../store/store";
 import LeftMenu from "./Dashboard/LeftMenu";
 import { HiMenuAlt1 } from "react-icons/hi";
@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { Card, CardBody, Input, Button } from "@material-tailwind/react";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
+import { replaceImageLinkss } from "../utils/replaceImageLinkss";
 
 const MDEditor = dynamic(
   () => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -29,7 +30,7 @@ function DetailsRepo({ repoName }) {
 
   const [tags, setTags] = useState([]);
 
-  const [tagStr, setTagStr] = useState("");
+  const [tagStr, setTagStr] = useState("allitems");
 
   useEffect(() => {
     fetchReadmd(repoName);
@@ -37,20 +38,19 @@ function DetailsRepo({ repoName }) {
     fetchCategory();
   }, [fetchReadmd, fetchBranches, repoName, fetchCategory]);
 
+
   useEffect(() => {
     if (init.description && init.category) {
+      const finalText = replaceImageLinkss(init?.description, repoName);
       setFinalRepo({
         ...init,
         category: init?.category[0]?.id,
         subBranch: init?.subBranch[0]?.name,
+        description: finalText,
       });
       return;
     }
-  }, [init]);
-
-  useEffect(() => {
-    console.log(init);
-  }, [init]);
+  }, [init, repoName]);
 
   const closeSidebar = () => {
     setSidebar(false);
@@ -272,11 +272,12 @@ function DetailsRepo({ repoName }) {
                           variant="outlined"
                           label="Select Sub Branch"
                         >
-                          {init?.category.map((category, index) => (
-                            <option key={index} value={category.id}>
-                              {category.name}
-                            </option>
-                          ))}
+                          {init?.category &&
+                            init?.category.map((category, index) => (
+                              <option key={index} value={category.id}>
+                                {category.name}
+                              </option>
+                            ))}
                         </select>
                       )}
                     </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Card, List } from "@material-tailwind/react";
+import logo from "../../img/TheFlutterWay_logo_small.png"
 
 import {
   HomeIcon,
@@ -36,7 +37,7 @@ export default function LeftMenu({ sidebar, closeSidebar }) {
         <div className="mb-2 p-4   ">
           <div className="logo_box cursor-pointer">
             <Link href={`/`}>
-              <Image height={150} width={150} alt="logo" />
+              <Image src={logo} height={120} width={120} alt="logo" />
             </Link>
           </div>
           <div className="  w-full  mt-4  border-b border-[#ffffff1a] "></div>
