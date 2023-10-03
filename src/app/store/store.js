@@ -5,9 +5,13 @@ import "text-encoding";
 import axios from "axios";
 
 const useStore = create((set) => ({
-  repos: null,
+
+  repos: null
+  ,
   data: null,
+
   loading: false,
+
   error: null,
 
   init: {
@@ -21,6 +25,8 @@ const useStore = create((set) => ({
     tags: "",
     isPublised: "true",
   },
+
+
 
   fetchRepo: async () => {
     set({ loading: true, error: null });

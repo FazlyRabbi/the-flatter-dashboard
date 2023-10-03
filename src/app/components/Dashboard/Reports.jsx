@@ -9,14 +9,39 @@ import LeftMenu from "./LeftMenu";
 import DataTable from "react-data-table-component";
 import { HiMenuAlt1 } from "react-icons/hi";
 
-export default function Reports({ data }) {
-  const [homeCares, setHomeCares] = useState([]);
+export default function Reports() {
+  const [featured, setFeatured] = useState([]);
+
   const [sidebar, setSidebar] = useState(false);
 
   // leoad search
   const [search, setSearch] = useState("");
   // set filtered members
   const [filtered, setFiltered] = useState([]);
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_URL}/featured`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+        { cache: "no-store" }
+      );
+      const { data } = await response.json();
+
+      console.log(data);
+    } catch (error) {
+      set({ error, loading: false });
+    }
+  };
 
   // table columns
   const columns = [
@@ -73,11 +98,6 @@ export default function Reports({ data }) {
     setSidebar(false);
   };
 
-  useEffect(() => {
-    setHomeCares(data?.data);
-    setFiltered(data?.data);
-  }, [data]);
-
   const customStyles = {
     rows: {
       style: {
@@ -98,12 +118,6 @@ export default function Reports({ data }) {
     },
   };
 
-
-
-
-
-
-
   return (
     <div className="   flex   bg-[#F2F5F9]">
       {/* <lest menu /> */}
@@ -112,9 +126,9 @@ export default function Reports({ data }) {
         sidebar={sidebar}
         closeSidebar={closeSidebar}
       />
-
       {/* total page */}
-      <div className=" w-full grid   h-full  overflow-y-scroll grid-cols-1  2xl:grid-cols-3 gap-y-2 gap-2 lg:col-span-4 gap-x-5">
+
+      <div className=" w-full grid    xl:ml-[20rem]   h-[100vh]  overflow-y-scroll grid-cols-1  2xl:grid-cols-3 gap-y-2 gap-2 lg:col-span-4 gap-x-5">
         <div className="   2xl:col-span-3  2xl:order-2 ">
           {/* header */}
           <div className="  bg-white flex items-center  px-10 justify-between  h-[5rem] cutstomShad  w-full  mb-8">

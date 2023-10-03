@@ -47,7 +47,7 @@ export async function getRepoByCondition(query) {
 }
 
 export async function getRepoByCategory(query) {
-  console.log(query);
+ 
   const products = await prisma.Repos.findMany({
     where: {
       category: {

@@ -12,7 +12,7 @@ export async function signup(req) {
       data: res,
     };
 
-     console.log(data);
+    
 
     return new Response(JSON.stringify(responseData), {
       status: 200,

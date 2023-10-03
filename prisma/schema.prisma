@@ -24,6 +24,22 @@ model Repos {
   updatedAt    DateTime @updatedAt
   categoryId   Int
 }
+model Featured {
+  
+  id           Int      @id @default(autoincrement())
+  thumbnailUrl String
+  title        String
+  description  String   
+  subBranch    String   
+  version      String
+  price        String
+  reponame     String @default("main")
+  liveLink     String
+  tags         String
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
 
 model User {
   id        Int      @id @default(autoincrement())

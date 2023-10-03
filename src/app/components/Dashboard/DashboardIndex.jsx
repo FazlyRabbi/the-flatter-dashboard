@@ -30,7 +30,7 @@ function DashboardIndex() {
 
       const { data } = await axios.post("/api/repo", formData);
 
-      console.log(data);
+     
     } catch (err) {
       console.log(err);
     }
@@ -50,7 +50,7 @@ function DashboardIndex() {
       />
 
       {/* total page */}
-      <div className="  xl:ml-[21rem]  w-full  ">
+      <div className="  xl:ml-[21rem]  w-full h-full  ">
         {/* header */}
         <div className="  bg-white flex items-center  px-10 justify-between  h-[5rem] cutstomShad  w-full  mb-8">
           <h1 className=" uppercase  text-[1.5rem]  text-[#223354] font-bold">
@@ -64,7 +64,7 @@ function DashboardIndex() {
           </div>
         </div>
 
-        <div className="mb-12 mt-5  px-[2rem] w-full grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mb-12 mt-5  px-[2rem] w-full   grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
           {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
             <StatisticsCard
               key={title}

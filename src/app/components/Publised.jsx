@@ -268,6 +268,7 @@ const loader = (
 );
 
 export default function Publised() {
+  
   const [sidebar, setSidebar] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { loading, error, fetchRepo, repos } = useStore();
@@ -309,6 +310,7 @@ export default function Publised() {
         setIsFatching(false);
         return;
       }
+      
     } catch (e) {
       console.log(e);
     }

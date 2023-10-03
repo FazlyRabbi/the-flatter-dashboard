@@ -1,7 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import { Card, List } from "@material-tailwind/react";
-import logo from "../../img/TheFlutterWay_logo_small.png"
+import logo from "../../img/TheFlutterWay_logo_small.png";
+
+import {
+  DeviceTabletIcon,
+  FingerPrintIcon,
+  SwatchIcon,
+} from "@heroicons/react/24/outline";
 
 import {
   HomeIcon,
@@ -24,7 +30,7 @@ export default function LeftMenu({ sidebar, closeSidebar }) {
   };
 
   return (
-    <div className="xl:p-5 xl:fixed  ">
+    <div className="xl:p-5 xl:fixed z-50  ">
       <Card
         className={` ${
           sidebar ? "left-[0rem] z-50  " : "-left-[100rem]"
@@ -86,6 +92,54 @@ export default function LeftMenu({ sidebar, closeSidebar }) {
             >
               <ArrowUpOnSquareStackIcon className="h-5 w-5  text-white" />
               publised repo
+            </Button>
+          </Link>
+
+          <Link href={`/publised`}>
+            <Button
+              variant="gradient"
+              ripple={false}
+              color="blue"
+              className={`  ${
+                path === "/publised"
+                  ? ""
+                  : "bg-none shadow-none  hover:shadow-none"
+              } w-full       text-sm text-left flex items-center gap-3 `}
+            >
+              <FingerPrintIcon className="h-6 w-6 text-white" />
+              Privet Repo
+            </Button>
+          </Link>
+
+          <Link href={`/setfeatured`}>
+            <Button
+              variant="gradient"
+              ripple={false}
+              color="blue"
+              className={`  ${
+                path === "/setfeatured"
+                  ? ""
+                  : "bg-none shadow-none  hover:shadow-none"
+              } w-full       text-sm text-left flex items-center gap-3 `}
+            >
+              <DeviceTabletIcon className="h-6 w-6  text-white" />
+              Set Fetured Products
+            </Button>
+          </Link>
+
+          <Link href={`/showfeatured`}>
+            <Button
+              variant="gradient"
+              ripple={false}
+              color="blue"
+              className={`  ${
+                path === "/showfeatured"
+                  ? ""
+                  : "bg-none shadow-none  hover:shadow-none"
+              } w-full       text-sm text-left flex items-center gap-3 `}
+            >
+              <SwatchIcon className="h-6 w-6  text-white" />
+              Show Featured
             </Button>
           </Link>
         </List>
