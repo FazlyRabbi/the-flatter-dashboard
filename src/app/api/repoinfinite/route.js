@@ -1,8 +1,8 @@
 import { createEdgeRouter } from "next-connect";
-import { getRepo, postRepo, privetRepo } from "@/app/controllers/repo";
-const router = createEdgeRouter();
+import { getRepoByInfinite, getSearchSuggestion } from "@/app/controllers/repo";
 
-router.get(getRepo).post(postRepo).put(privetRepo);
+const router = createEdgeRouter();
+router.put(getRepoByInfinite).post(getSearchSuggestion);
 
 export async function GET(request, ctx) {
   return router.run(request, ctx);
@@ -15,5 +15,3 @@ export async function PUT(request, ctx) {
 export async function POST(request, ctx) {
   return router.run(request, ctx);
 }
-
-

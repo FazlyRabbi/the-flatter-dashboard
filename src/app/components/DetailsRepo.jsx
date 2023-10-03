@@ -104,9 +104,9 @@ function DetailsRepo({ repoName }) {
     setTagStr(commaSeparatedString);
   };
 
-  if (!finalRepo) {
-    return;
-  }
+  // if (!finalRepo) {
+  //   return;
+  // }
 
   return (
     <section>
@@ -160,7 +160,7 @@ function DetailsRepo({ repoName }) {
                         label="Title"
                         required
                         disabled={isFatching}
-                        value={finalRepo.title}
+                        value={finalRepo?.title}
                         onChange={(e) =>
                           setFinalRepo({ ...finalRepo, title: e.target.value })
                         }
@@ -221,7 +221,7 @@ function DetailsRepo({ repoName }) {
                         label="Version"
                         required
                         disabled={isFatching}
-                        value={finalRepo.version}
+                        value={finalRepo?.version}
                         onChange={(e) =>
                           setFinalRepo({
                             ...finalRepo,
@@ -241,7 +241,7 @@ function DetailsRepo({ repoName }) {
                       <Input
                         type="text"
                         label="Live Link"
-                        value={finalRepo.liveLink}
+                        value={finalRepo?.liveLink}
                         onChange={(e) =>
                           setFinalRepo({
                             ...finalRepo,

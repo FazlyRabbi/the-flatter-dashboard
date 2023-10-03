@@ -2,6 +2,9 @@ import {
   CreateRepo,
   getAllRepo,
   makePrivetRepo,
+  getAllRepoForIfinite,
+  getSearchSuggestions
+  
 } from "../../../prisma/createRepo";
 import { NextRequest, NextResponse } from "next/server";
 import { existsSync } from "fs";
@@ -54,12 +57,92 @@ export async function getRepo(req) {
   }
 }
 
+export async function getRepoByInfinite(req) {
+  const {page} = await req.json();
+
+  try {
+    const result = await getAllRepoForIfinite(page);
+
+    const responseData = {
+      ok: true,
+      message: "Repo get successfully!",
+      data: result,
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    });
+  } catch (err) {
+    const responseData = {
+      ok: false,
+      message: err.message,
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      status: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    });
+  }
+}
+
+
+export async function getSearchSuggestion(req) {
+
+  const {keywords} = await req.json();
+
+  try {
+    const result = await getSearchSuggestions(keywords);
+
+    const responseData = {
+      ok: true,
+      message: "Repo get successfully!",
+      data: result,
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    });
+  } catch (err) {
+    const responseData = {
+      ok: false,
+      message: err.message,
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      status: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    });
+  }
+}
+
+
+
+
+
 export async function postRepo(req) {
   const formData = await req.formData();
 
   try {
     const f = formData.get("file");
- 
+
     if (!f) {
       return NextResponse.json({}, { status: 400 });
     }

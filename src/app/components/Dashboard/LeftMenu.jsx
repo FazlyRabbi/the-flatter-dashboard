@@ -95,7 +95,7 @@ export default function LeftMenu({ sidebar, closeSidebar }) {
             </Button>
           </Link>
 
-          <Link href={`/publised`}>
+          {/* <Link href={`/publised`}>
             <Button
               variant="gradient"
               ripple={false}
@@ -109,7 +109,7 @@ export default function LeftMenu({ sidebar, closeSidebar }) {
               <FingerPrintIcon className="h-6 w-6 text-white" />
               Privet Repo
             </Button>
-          </Link>
+          </Link> */}
 
           <Link href={`/setfeatured`}>
             <Button

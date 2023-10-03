@@ -20,18 +20,43 @@ export async function getAllRepo(page) {
       category: true,
     },
   });
-
   return records;
-  // } else {
-  //   const records = await prisma.Repos.findMany({
-  //     // skip: page * 6,
-  //     take: pageData,
-  //     include: {
-  //       category: true,
-  //     },
-  //   });
-  //   return records;
-  // }
+}
+
+export async function getSearchSuggestions(keyword) {
+  // Sanitize the input: trim spaces and convert to lowercase
+  const sanitizedKeyword = keyword.trim().toLowerCase();
+
+  // Check if the sanitized keyword is blank, return empty array if true
+  if (sanitizedKeyword === "") {
+    return [];
+  }
+
+  const suggestions = await prisma.Repos.findMany({
+    where: {
+      title: {
+        contains: sanitizedKeyword, // You can also use 'contains' for more flexibility
+      },
+    },
+    select: {
+      title: true,
+    },
+  });
+
+  return suggestions;
+}
+
+export async function getAllRepoForIfinite(page) {
+  const pageData = parseInt(page);
+
+  const records = await prisma.Repos.findMany({
+    skip: pageData * 18,
+    take: 18,
+    include: {
+      category: true,
+    },
+  });
+  return records;
 }
 
 export async function getRepoByCondition(query) {
@@ -47,7 +72,6 @@ export async function getRepoByCondition(query) {
 }
 
 export async function getRepoByCategory(query) {
- 
   const products = await prisma.Repos.findMany({
     where: {
       category: {
